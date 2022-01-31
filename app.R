@@ -7,10 +7,13 @@
 #    http://shiny.rstudio.com/
 #
 
+#install.packages('docker')
+#library(docker)
+#docker
 #_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 #                                                                        -
 #                                                                        -
-#            Lnstalling and loading needful packages                     -
+#            Installing and loading needful packages                     -
 #            Loading source files                                        -
 #                                                                        -
 #                                                                        -
@@ -48,9 +51,14 @@ library(rvest)
 library(fontawesome)
 library(wordcloud2)
 library(RColorBrewer)
-#library(tidytext)
-library(stopwords)
+library(tidytext)
+#library(SnowballC)
+#stopwords_getsources()
 #stopwords
+library(readr)
+stopwords <- read_csv("stopwords.csv")
+
+
 source("our shared secrets - Tokens and Secrets.R")
 #Token Spotify
 Sys.setenv(SPOTIFY_CLIENT_ID = Hadi_spotify_client_id)
@@ -688,7 +696,7 @@ server <- function(input, output,session) {
         
         artist_lyrics_tokenized <- artist_lyrics_tokenized %>%  mutate(suggestion = correct_spelling(word))
         
-        artist_lyrics_tokenized <- artist_lyrics_tokenized %>% anti_join(get_stopwords())
+        artist_lyrics_tokenized <- artist_lyrics_tokenized %>% anti_join(stopwords)
         
         artist_lyrics_tokenized <- artist_lyrics_tokenized %>% dplyr::count(song_id,suggestion)
         
@@ -771,7 +779,7 @@ server <- function(input, output,session) {
         
         song_lyrics_tokenized <- song_lyrics_tokenized %>%  mutate(suggestion = correct_spelling(word))
         
-        song_lyrics_tokenized <- song_lyrics_tokenized %>% anti_join(get_stopwords())
+        song_lyrics_tokenized <- song_lyrics_tokenized %>% anti_join(stopwords)
         
         song_lyrics_tokenized <- song_lyrics_tokenized %>% dplyr::count(song_id,suggestion)
         
@@ -858,7 +866,7 @@ server <- function(input, output,session) {
         
         topic_lyrics_tokenized <- topic_lyrics_tokenized %>%  mutate(suggestion = correct_spelling(word))
         
-        topic_lyrics_tokenized <- topic_lyrics_tokenized %>% anti_join(get_stopwords())
+        topic_lyrics_tokenized <- topic_lyrics_tokenized %>% anti_join(stopwords)
         
         topic_lyrics_tokenized <- topic_lyrics_tokenized %>% dplyr::count(song_id,suggestion)
         
@@ -876,7 +884,8 @@ server <- function(input, output,session) {
     
 }
 
-?unnest_tokens
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
