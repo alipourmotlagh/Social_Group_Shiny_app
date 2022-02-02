@@ -6,7 +6,14 @@
 #
 #    http://shiny.rstudio.com/
 #
-
+#----------------------------------------------------------------------
+#scources:
+# 1. we use the template of R shiny studio for our project. the link is provided below:
+#       https://rstudio.github.io/shinydashboard/examples.html
+#       https://github.com/rstudio/shiny-examples/tree/main/087-crandash
+#
+#
+#----------------------------------------------------------------------
 #install.packages('docker')
 #library(docker)
 #docker
@@ -86,7 +93,8 @@ ui <- dashboardPage(
         sidebarMenu(
             menuItem("Artist", tabName = "artist"),
             menuItem("Tracks Specification", tabName = "tracks"),
-            menuItem("Tracks Lyrics", tabName = "lyrics")
+            menuItem("Tracks Lyrics", tabName = "lyrics"),
+            menuItem("news", tabName = "new")
         )
     ),
     
@@ -363,7 +371,93 @@ ui <- dashboardPage(
                     ),
                     
                     
-            )
+            ),
+            #---------------------------------------------
+            #New page
+            #---------------------------------------------
+            tabItem("new",
+                    
+                    fluidRow(
+                        
+                        box(
+                            width = 12, status = "info",
+                            title = "Artist lyrics search",
+                            
+                            searchInput(
+                                inputId = "artist_search_genius",
+                                label = "Click search icon to update or hit 'Enter'", 
+                                placeholder = "Ebi",
+                                btnSearch = icon("search"), 
+                                btnReset = icon("remove"),
+                                width = "100%"
+                            ),
+                        ),
+                        box(
+                            width = 12, status = "info",
+                            title = "artist latest song word cloud",
+                            wordcloud2Output('plot_word_cloud_artist'),
+                            
+                            
+                        ),
+                        
+                    ),
+                    
+                    fluidRow(
+                        
+                        box(
+                            width = 12, status = "info",
+                            title = "Song lyrics search",
+                            
+                            searchInput(
+                                inputId = "song_search_genius",
+                                label = "Click search icon to update or hit 'Enter'", 
+                                placeholder = "Love",
+                                btnSearch = icon("search"), 
+                                btnReset = icon("remove"),
+                                width = "100%"
+                            ),
+                        ),
+                        box(
+                            width = 12, status = "info",
+                            title = "song latest song word cloud",
+                            wordcloud2Output('plot_word_cloud_song'),
+                            
+                            
+                        ),
+                        
+                        
+                    ),
+                    
+                    fluidRow(
+                        
+                        box(
+                            width = 12, status = "info",
+                            title = "Topic lyrics search",
+                            
+                            searchInput(
+                                inputId = "topic_search_genius",
+                                label = "Click search icon to update or hit 'Enter'", 
+                                placeholder = "Rap God",
+                                btnSearch = icon("search"), 
+                                btnReset = icon("remove"),
+                                width = "100%"
+                            ),
+                        ),
+                        box(
+                            width = 12, status = "info",
+                            title = "song latest song word cloud",
+                            wordcloud2Output('plot_word_cloud_topic'),
+                            
+                            
+                        ),
+                        
+                        
+                    ),
+                    
+                    
+            ),
+            
+            
         )
     )
 )
@@ -378,6 +472,10 @@ server <- function(input, output,session) {
     #---------------------------------------------
     #Artist page
     #---------------------------------------------
+    
+    
+    
+    
     
     find_artist<-reactive({
         find_artist<-search_spotify(
